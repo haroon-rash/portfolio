@@ -22,6 +22,21 @@ public class DataInitializer {
 
     @org.springframework.beans.factory.annotation.Value("${app.admin.password}")
     private String adminPassword;
+@Bean
+public CommandLineRunner initData() {
+    return args -> {
+        System.out.println("Admin username: " + adminUsername); // <-- ADD THIS
+        if (accountRepository.findByUsername(adminUsername).isEmpty()) {
+            Account admin = new Account();
+            admin.setUsername(adminUsername);
+            admin.setPassword(passwordEncoder.encode(adminPassword));
+            accountRepository.save(admin);
+            System.out.println("Admin account created successfully.");
+        } else {
+            System.out.println("Admin account already exists.");
+        }
+    };
+}
 
     @Bean
     public CommandLineRunner initData() {
